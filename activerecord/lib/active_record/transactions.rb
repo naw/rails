@@ -382,7 +382,15 @@ module ActiveRecord
         add_to_transaction
         begin
           status = yield
+          if @callback_history
+            @callback_history << :returned_to_frame
+          end
         rescue ActiveRecord::Rollback
+          if @callback_history
+            if status.nil?
+              @callback_history << :in_rescue_but_status_is_nil
+            end
+          end
           clear_transaction_record_state
           status = nil
         end

@@ -597,6 +597,14 @@ module ActiveRecord
 
       yield(self) if block_given?
 
+      if @callback_history
+        if id != false
+          @callback_history << "_create_record is true"
+        else
+          @callback_history << "_create_record is false"
+        end
+      end
+
       id
     end
 
